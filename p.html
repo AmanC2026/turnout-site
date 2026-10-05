@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find me on Turnout</title>
+<meta name="description" content="A Turnout player's card. Opens the app if you have it.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+.card { background: #10131F; color: #fff; border-radius: 20px; padding: 2rem 1.5rem; margin: 2rem 0 1.5rem; }
+.card .mark { color: #fff; margin-bottom: 1.5rem; }
+.card h1 { color: #fff; font-size: clamp(1.8rem, 6vw, 2.4rem); margin: 0 0 1.25rem; }
+.card .tag { color: #FFE14D; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.5rem; }
+.open { display: inline-block; background: #2447F5; color: #fff; font-weight: 700; text-decoration: none; padding: 0.9rem 1.4rem; border-radius: 14px; }
+.open:hover { background: #1b39cc; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="mark" href="index.html"><svg class="mark-icon" viewBox="0 0 120 120" width="26" height="26" aria-hidden="true"><rect width="120" height="120" rx="27" fill="#2447F5"/><path transform="rotate(0 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(90 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(180 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(270 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="60" cy="60" r="9.5" fill="#FFE14D"/></svg>Turnout</a>
+    <nav>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="support.html">Support</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="card">
+  <span class="mark"><svg class="mark-icon" viewBox="0 0 120 120" width="26" height="26" aria-hidden="true"><rect width="120" height="120" rx="27" fill="#2447F5"/><path transform="rotate(0 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(90 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(180 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(270 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="60" cy="60" r="9.5" fill="#FFE14D"/></svg>Turnout</span>
+  <p class="tag">Find me on Turnout</p>
+  <h1 id="title">Opening Turnout…</h1>
+  <a id="open" class="open hidden" href="#">Open in Turnout</a>
+</div>
+<p id="beta" class="hidden">Don't have Turnout yet? It's in private beta in Tampa Bay — email <a href="mailto:pckpapp8@gmail.com">pckpapp8@gmail.com</a> for an invite.</p>
+
+<footer>
+<p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a></p>
+</footer>
+</main>
+
+<script>
+(function () {
+  // The player's id rides in ?u=. Only a UUID gets near the app link.
+  var u = new URLSearchParams(location.search).get("u") || "";
+  var title = document.getElementById("title"), open = document.getElementById("open"), beta = document.getElementById("beta");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u)) {
+    title.textContent = "This link isn't right";
+    beta.classList.remove("hidden");
+    return;
+  }
+  var app = "pickupapp://player/" + u;
+  open.href = app;
+  // Try the app once. If it opened, this page is gone; if not, after a
+  // moment, show the button and the way to get the app.
+  setTimeout(function () {
+    title.textContent = "A Turnout player wants you on their court.";
+    open.classList.remove("hidden");
+    beta.classList.remove("hidden");
+  }, 1200);
+  location.href = app;
+})();
+</script>
+</body>
+</html>
