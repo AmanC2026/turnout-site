@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Find me on Turnout</title>
-<meta name="description" content="A Turnout player's card. Opens the app if you have it.">
+<meta name="description" content="A Turnout player or game. Opens the app if you have it.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
 <main class="wrap">
 <div class="card">
   <span class="mark"><svg class="mark-icon" viewBox="0 0 120 120" width="26" height="26" aria-hidden="true"><rect width="120" height="120" rx="27" fill="#2447F5"/><path transform="rotate(0 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(90 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(180 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path transform="rotate(270 60 60)" d="M47 24 L60 37 L73 24" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="60" cy="60" r="9.5" fill="#FFE14D"/></svg>Turnout</span>
-  <p class="tag">Find me on Turnout</p>
+  <p id="tag" class="tag">Find me on Turnout</p>
   <h1 id="title">Opening Turnout…</h1>
   <a id="open" class="open hidden" href="#">Open in Turnout</a>
 </div>
@@ -48,20 +48,31 @@
 
 <script>
 (function () {
-  // The player's id rides in ?u=. Only a UUID gets near the app link.
-  var u = new URLSearchParams(location.search).get("u") || "";
-  var title = document.getElementById("title"), open = document.getElementById("open"), beta = document.getElementById("beta");
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u)) {
+  // A player's id rides in ?u=, a game's in ?g=. Only a UUID gets near the
+  // app link, and a game wins if both are somehow present.
+  var params = new URLSearchParams(location.search);
+  var g = params.get("g") || "", u = params.get("u") || "";
+  var title = document.getElementById("title"), open = document.getElementById("open"), beta = document.getElementById("beta"), tag = document.getElementById("tag");
+  var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  var id = uuid.test(g) ? g : uuid.test(u) ? u : "";
+  if (!id) {
     title.textContent = "This link isn't right";
     beta.classList.remove("hidden");
     return;
   }
-  var app = "pickupapp://player/" + u;
+  var isGame = id === g;
+  if (isGame) {
+    document.title = "Join the game on Turnout";
+    tag.textContent = "Join the game on Turnout";
+  }
+  var app = "pickupapp://" + (isGame ? "game/" : "player/") + id;
   open.href = app;
   // Try the app once. If it opened, this page is gone; if not, after a
   // moment, show the button and the way to get the app.
   setTimeout(function () {
-    title.textContent = "A Turnout player wants you on their court.";
+    title.textContent = isGame
+      ? "There's a game on Turnout with a spot for you."
+      : "A Turnout player wants you on their court.";
     open.classList.remove("hidden");
     beta.classList.remove("hidden");
   }, 1200);
